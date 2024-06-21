@@ -85,6 +85,16 @@
 
         .hidden { display: none; }
 
+        .vis-item.clickable {
+            cursor: pointer;
+        }
+
+        .vis-item.clickable:hover {
+            background-color: #e0f7fa; /* Light cyan background on hover */
+            text-decoration: underline; /* Underline text on hover */
+        }
+
+
 
     </style>
     <script>
@@ -100,11 +110,11 @@
             const data = await fetchWebAppData(webAppUrl);
             allItems = data.map(item => ({
                 id: parseInt(item.id),
-                content: item.content,
+                content: item.link ? `${item.content}` : item.content,
                 start: item.start,
                 group: item.group,
                 categories: item.categories.split(';'),
-                className: item.className,
+                className: item.className + (item.link ? ' clickable' : ''),
                 link: item.link
             }));
             console.log(allItems);
@@ -242,7 +252,7 @@
                         <label class="checkbox-label executiveLeadership-checkbox"><input type="checkbox" class="filter-checkbox category" id="executiveLeadership" checked> AISI Executive Leadership Announced</label>
                         <label class="checkbox-label regulationPolicy-checkbox"><input type="checkbox" class="filter-checkbox category" id="regulationPolicy" > Regulation/Policy</label>
                         <label class="checkbox-label globalSummits-checkbox"><input type="checkbox" class="filter-checkbox category" id="globalSummits" checked> Global Summits</label>
-                        <label class="checkbox-label other-checkbox"><input type="checkbox" class="filter-checkbox category" id="other" checked> Other</label>
+                        <label class="checkbox-label other-checkbox"><input type="checkbox" class="filter-checkbox category" id="other" > Other</label>
                     </div>
                     <div class="button-container">
                         <button class="select-all" data-type="category">Select All Categories</button>
