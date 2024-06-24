@@ -39,9 +39,11 @@
         .button-container button:hover { background-color: #45a049; }
 
 
+
         .vis-item {
             border-radius: 3px;
             padding: 3px 8px;
+            transition: background-color 0s ease; /* Add transition for smooth color change */
         }
 
         .vis-item .vis-item-content {
@@ -50,11 +52,14 @@
 
 
 
-        .vis-item.launched { background-color: #5cb85c !important; color: white !important; border: 1px solid #4cae4c !important; }
-        .vis-item.executiveLeadership { background-color: #5bc0de !important; color: white !important; border: 1px solid #46b8da !important; }
-        .vis-item.globalSummits { background-color: #a0522d !important; color: white !important; border: 1px solid #8b4513 !important; }
-        .vis-item.other { background-color: #696969 !important; color: white !important; border: 1px solid #585858 !important; }
-        .vis-item.regulationPolicy { background-color: #ffd700 !important; color: black !important; border: 1px solid #ffd700 !important; }
+
+        .vis-item.launched { background-color: #5cb85c; color: white; border: 1px solid #4cae4c; }
+        .vis-item.executiveLeadership { background-color: #5bc0de; color: white; border: 1px solid #46b8da; }
+        .vis-item.globalSummits { background-color: #a0522d; color: white; border: 1px solid #8b4513; }
+        .vis-item.other { background-color: #696969; color: white; border: 1px solid #585858; }
+        .vis-item.regulationPolicy { background-color: #ffd700; color: black; border: 1px solid #ffd700; }
+
+
 
         .launched-checkbox::before { background-color: #5cb85c; }
         .executiveLeadership-checkbox::before { background-color: #5bc0de; }
@@ -85,13 +90,40 @@
 
         .hidden { display: none; }
 
+  
         .vis-item.clickable {
             cursor: pointer;
         }
 
         .vis-item.clickable:hover {
-            background-color: #e0f7fa; /* Light cyan background on hover */
+            
             text-decoration: underline; /* Underline text on hover */
+        }
+
+        /* Base style for vis-box */
+        .vis-item.vis-box {
+            z-index: 20; /* Higher z-index for vis-box elements */
+        }
+
+        .vis-item.vis-line {
+            z-index: 5; /* Lower z-index for other lines */
+        }
+
+        /* Add hover styles for line items */
+        .vis-item.vis-line.highlight {
+            background-color: #ff0000 !important; /* Red color for highlighted state */
+            color:white;
+            border-color: #ff0000 !important;
+            z-index: 10;
+            padding: 1px;
+            border-radius: 0px;
+        }
+
+        .vis-item.vis-box.highlight {
+            /* color: #ff0000 !important; */
+            /* z-index: 0 !important; */
+            border-color: #ff0000 !important;
+            border-width: 2px;
         }
 
 
@@ -114,7 +146,7 @@
                 start: item.start,
                 group: item.group,
                 categories: item.categories.split(';'),
-                className: item.className + (item.link ? ' clickable' : ''),
+                className: `${item.className} item-${item.id}` + (item.link ? ' clickable' : ''),
                 link: item.link
             }));
             console.log(allItems);
@@ -140,7 +172,7 @@
                 // height: '75vh',                 // Set the height of the timeline
                 maxHeight: '95vh',              // Set the maximum height
                 // minHeight: '50vh',              // Set the minimum height
-                autoResize: true                // Automatically resize the timeline
+                autoResize: true,                // Automatically resize the timeline
             };
 
 
@@ -159,12 +191,66 @@
 
             var timeline = new vis.Timeline(container, items, groups, options);
 
+            console.log('Timeline created:', timeline);
+
             timeline.on('select', function (properties) {
                 var item = items.get(properties.items[0]);
                 if (item && item.link) {
                     window.open(item.link, '_blank');
                 }
             });
+
+            container.addEventListener('mouseover', function(event) {
+                var target = event.target.closest('.vis-item');
+                if (target && target.classList.contains('vis-box')) {
+                    var itemId = getItemIdFromElement(target);
+                    highlightCorrespondingLine(itemId);
+                }
+            });
+
+            container.addEventListener('mouseout', function(event) {
+                var target = event.target.closest('.vis-item');
+                if (target && target.classList.contains('vis-box')) {
+                    removeHighlight();
+                }
+            });
+
+            function getItemIdFromElement(element) {
+                var classes = element.className.split(' ');
+                for (var i = 0; i < classes.length; i++) {
+                    if (classes[i].startsWith('item-')) {
+                        return parseInt(classes[i].split('-')[1]);
+                    }
+                }
+                return null;
+            }
+
+            function highlightCorrespondingLine(boxItemId) {
+                var boxItem = items.get(boxItemId);
+                if (boxItem) {
+                    var boxElement = document.querySelector('.vis-item.item-' + boxItemId);
+                    var allItems = document.querySelectorAll('.vis-item');
+                    
+                    allItems.forEach(function(item) {
+                        var itemId = getItemIdFromElement(item);
+                        var itemData = items.get(itemId);
+                        if (itemData && itemData.start === boxItem.start) {
+                            item.classList.add('highlight');
+                        }
+                    });
+                }
+            }
+
+            function removeHighlight() {
+                var highlightedItems = document.querySelectorAll('.highlight');
+                highlightedItems.forEach(function(item) {
+                    item.classList.remove('highlight');
+                });
+            }
+
+            
+        
+
 
             function applyFilters() {
                 var selectedCategories = Array.from(document.querySelectorAll('.category:checked')).map(el => el.id);
@@ -209,6 +295,7 @@
                 });
                 applyFilters();
             }
+
 
             applyFilters();
             timeline.fit();
