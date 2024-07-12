@@ -357,38 +357,28 @@
             const filterSection = document.getElementById('filter-section');
             let isClickOpen = false;
 
-
             // Toggle functionality (works for both mobile and desktop)
             filterTrigger.addEventListener('click', () => {
+                isClickOpen = !isClickOpen;
                 filterSection.classList.toggle('active');
             });
 
             if (window.matchMedia("(min-width: 769px)").matches) {
-                filterSection.addEventListener('mouseleave', () => {
-                    setTimeout(() => {
-                        filterSection.classList.remove('active');
-                }, 100); // Small delay to prevent flickering
-
-                });
+                let hoverTimeout;
 
                 filterTrigger.addEventListener('mouseenter', () => {
+                    clearTimeout(hoverTimeout);
                     filterSection.classList.add('active');
                 });
 
-
+                filterSection.addEventListener('mouseleave', () => {
+                    hoverTimeout = setTimeout(() => {
+                        if (!isClickOpen) {
+                            filterSection.classList.remove('active');
+                        }
+                    }, 100); // Small delay to prevent flickering
+                });
             }
-
-            // hideButton.addEventListener('click', () => {
-            //     filterSection.classList.add('hidden');
-            //     hideButton.classList.add('hidden');
-            //     showButton.classList.remove('hidden');
-            // });
-
-            // showButton.addEventListener('click', () => {
-            //     filterSection.classList.remove('hidden');
-            //     hideButton.classList.remove('hidden');
-            //     showButton.classList.add('hidden');
-            // });
         });
 
 
