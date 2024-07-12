@@ -356,22 +356,26 @@
             const filterTrigger = document.getElementById('filter-trigger');
             const filterSection = document.getElementById('filter-section');
 
-            filterTrigger.addEventListener('mouseenter', () => {
-                filterSection.classList.add('active');
-            });
-
-
-
-            filterSection.addEventListener('mouseleave', () => {
-                filterSection.classList.remove('active');
-            });
-
 
             // Toggle functionality (works for both mobile and desktop)
             filterSection.addEventListener('click', () => {
                 filterSection.classList.toggle('active');
             });
 
+            if (window.matchMedia("(min-width: 769px)").matches) {
+                filterSection.addEventListener('mouseleave', () => {
+                    setTimeout(() => {
+                        filterSection.classList.remove('active');
+                }, 100); // Small delay to prevent flickering
+
+                });
+
+                filterTrigger.addEventListener('mouseenter', () => {
+                    filterSection.classList.add('active');
+                });
+
+
+            }
 
             // hideButton.addEventListener('click', () => {
             //     filterSection.classList.add('hidden');
