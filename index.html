@@ -247,7 +247,6 @@
                 { id: 'South Korea', content: '<img src="https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_South_Korea.svg" style="width:20px; vertical-align:middle;"> South Korea', style: 'background-color: #26a69a; color: white;' },
                 { id: 'Global', content: '🌍 Global', style: 'background-color: #9e9e9e; color: white;' }
             ]);
-
             var timeline = new vis.Timeline(container, items, groups, options);
 
             console.log('Timeline created:', timeline);
@@ -258,6 +257,7 @@
                     window.open(item.link, '_blank');
                 }
             });
+
 
             container.addEventListener('mouseover', function(event) {
                 var target = event.target.closest('.vis-item');
@@ -356,35 +356,23 @@
             }
 
 
+            console.log("Basic console log test");
+            const filterTrigger = document.getElementById('filter-trigger');
+            const filterSection = document.getElementById('filter-section');
+            filterTrigger.addEventListener('click', () => {
+                filterSection.classList.toggle('active');
+            });
+
+
+
             applyFilters();
             timeline.fit();
         }
 
         document.addEventListener('DOMContentLoaded', updateAllItems);
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const filterTrigger = document.getElementById('filter-trigger');
-            const filterSection = document.getElementById('filter-section');
-            let isClickOpen = false;
 
-            // Toggle functionality (works for both mobile and desktop)
-            filterTrigger.addEventListener('click', () => {
-                isClickOpen = !isClickOpen;
-                filterSection.classList.toggle('active');
-            });
-
-            filterSection.addEventListener('mouseleave', () => {
-                if (!isClickOpen) {
-                    isClickOpen = !isClickOpen;
-                    filterSection.classList.remove('active');
-                    
-                }
-            });
-            
-
-        });
-
-
+        
 
 
         
