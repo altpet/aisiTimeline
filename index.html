@@ -355,10 +355,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             const filterTrigger = document.getElementById('filter-trigger');
             const filterSection = document.getElementById('filter-section');
+            let isClickOpen = false;
 
 
             // Toggle functionality (works for both mobile and desktop)
-            filterSection.addEventListener('click', () => {
+            filterTrigger.addEventListener('click', () => {
                 filterSection.classList.toggle('active');
             });
 
