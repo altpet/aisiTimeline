@@ -61,12 +61,16 @@
             background-color: #e0e0e0;
         }
 
-        #filter-section:hover,
-        #filter-trigger:hover + #filter-section {
-            top: 30px;
+        @media (min-width: 769px) {
+            #filter-section:hover,
+            #filter-trigger:hover + #filter-section {
+                top: 30px;
+            }
         }
 
-
+        #filter-section.active {
+            top: 30px;
+        }
 
         
 
@@ -363,22 +367,15 @@
                 filterSection.classList.toggle('active');
             });
 
-            if (window.matchMedia("(min-width: 769px)").matches) {
-                let hoverTimeout;
+            filterSection.addEventListener('mouseleave', () => {
+                if (!isClickOpen) {
+                    isClickOpen = !isClickOpen;
+                    filterSection.classList.remove('active');
+                    
+                }
+            });
+            
 
-                filterTrigger.addEventListener('mouseenter', () => {
-                    clearTimeout(hoverTimeout);
-                    filterSection.classList.add('active');
-                });
-
-                filterSection.addEventListener('mouseleave', () => {
-                    hoverTimeout = setTimeout(() => {
-                        if (!isClickOpen) {
-                            filterSection.classList.remove('active');
-                        }
-                    }, 100); // Small delay to prevent flickering
-                });
-            }
         });
 
 
