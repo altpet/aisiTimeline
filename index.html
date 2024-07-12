@@ -27,6 +27,54 @@
             
         }
 
+        /* filter trigger section */
+
+        #filter-section {
+            position: fixed;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: top 0.3s ease-in-out;
+            z-index: 1000;
+            padding: 20px;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #filter-trigger {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 32px; 
+            background-color: #f0f0f0;
+            z-index: 999;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            
+        }
+
+        #filter-trigger:hover {
+            background-color: #e0e0e0;
+        }
+
+        #filter-section:hover,
+        #filter-trigger:hover + #filter-section {
+            top: 30px;
+        }
+
+
+
+        
+
+        /* Adjust visualization top margin to accommodate the trigger bar */
+        #visualization {
+            margin-top: 50px;
+        }
+
         .checkbox-container {display: flex; flex-direction: column; gap: 20px; margin-bottom: 20px;}
         .checkbox-group {display: flex; flex-wrap: wrap; gap: 10px;}
         .checkbox-row {display: flex;flex-wrap: wrap;align-items: center;gap: 10px;margin-bottom: 20px;}
@@ -88,15 +136,14 @@
         .south-korea-checkbox::before { background-image: url('https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_South_Korea.svg'); }
         .global-checkbox::before { content: '🌍'; font-size: 20px; }
 
-        .hidden { display: none; }
+        /* .hidden { display: none; } */
 
   
-        .vis-item.clickable {
+        .vis-item.vis-box.clickable {
             cursor: pointer;
         }
 
         .vis-item.clickable:hover {
-            
             text-decoration: underline; /* Underline text on hover */
         }
 
@@ -125,6 +172,8 @@
             border-color: #ff0000 !important;
             border-width: 2px;
         }
+
+
 
 
 
@@ -304,21 +353,40 @@
         document.addEventListener('DOMContentLoaded', updateAllItems);
 
         document.addEventListener('DOMContentLoaded', () => {
-            const hideButton = document.getElementById('hide-filters');
-            const showButton = document.getElementById('show-filters');
+            const filterTrigger = document.getElementById('filter-trigger');
             const filterSection = document.getElementById('filter-section');
 
-            hideButton.addEventListener('click', () => {
-                filterSection.classList.add('hidden');
-                hideButton.classList.add('hidden');
-                showButton.classList.remove('hidden');
+            filterTrigger.addEventListener('mouseenter', () => {
+                filterSection.classList.add('active');
             });
 
-            showButton.addEventListener('click', () => {
-                filterSection.classList.remove('hidden');
-                hideButton.classList.remove('hidden');
-                showButton.classList.add('hidden');
+
+
+            filterSection.addEventListener('mouseleave', () => {
+                filterSection.classList.remove('active');
             });
+
+
+            // Toggle functionality (works for both mobile and desktop)
+            filterSection.addEventListener('click', () => {
+                filterSection.classList.toggle('active');
+                filterSection.textContent = filterSection.classList.contains('active') 
+                    ? 'Hide Filters ▲' 
+                    : 'Show Filters ▼';
+            });
+
+
+            // hideButton.addEventListener('click', () => {
+            //     filterSection.classList.add('hidden');
+            //     hideButton.classList.add('hidden');
+            //     showButton.classList.remove('hidden');
+            // });
+
+            // showButton.addEventListener('click', () => {
+            //     filterSection.classList.remove('hidden');
+            //     hideButton.classList.remove('hidden');
+            //     showButton.classList.add('hidden');
+            // });
         });
 
 
@@ -329,10 +397,10 @@
     </script>
 </head>
 <body>
-
-    <!-- <div id="filter-section"> -->
+    <button id="filter-trigger">Timeline filters ▼</button>
+    <div id="filter-section">
         <div class="checkbox-container">
-            <div id="filter-section">
+
                 <div class="checkbox-row">
                     <div class="checkbox-group">
                         <label class="checkbox-label launched-checkbox"><input type="checkbox" class="filter-checkbox category" id="launched" checked> AISI Launched/Announced</label>
@@ -368,9 +436,9 @@
                 </div>
 
             </div>  
-            <button id="hide-filters">Hide Filters</button>
+            <!-- <button id="hide-filters">Hide Filters</button>
             <button id="show-filters" class="hidden">Show Filters</button>
-            
+             -->
 
         </div>
     <!-- </div> -->
